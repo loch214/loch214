@@ -44,12 +44,11 @@ const EDUCATION = [
   {
     logo: "logos/sliit.png",
     name: "Sri Lanka Institute of Information Technology",
-    detail: "BSc (Hons) in Information Technology, Software Engineering",
+    detail: "BSc (Hons) in Software Engineering",
   },
   {
     logo: "logos/dssc.png",
     name: "D. S. Senanayake College, Colombo",
-    detail: "Secondary education",
   },
 ];
 
@@ -72,6 +71,7 @@ async function fetchData() {
       user(login: $login) {
         createdAt
         contributionsCollection {
+          contributionYears
           totalCommitContributions
           totalPullRequestContributions
           totalIssueContributions
@@ -97,6 +97,25 @@ async function fetchData() {
     { login: LOGIN },
   );
   return data.user;
+}
+
+// GitHub only reports contributions one year at a time, so add them up.
+async function fetchAllTime(years) {
+  const fields = years
+    .map(
+      (y) => `y${y}: contributionsCollection(from: "${y}-01-01T00:00:00Z", to: "${y}-12-31T23:59:59Z") {
+        totalCommitContributions
+        contributionCalendar { totalContributions }
+      }`,
+    )
+    .join(" ");
+  const data = await graphql(`query($login: String!) { user(login: $login) { ${fields} } }`, { login: LOGIN });
+  const totals = { contributions: 0, commits: 0 };
+  for (const year of Object.values(data.user)) {
+    totals.contributions += year.contributionCalendar.totalContributions;
+    totals.commits += year.totalCommitContributions;
+  }
+  return totals;
 }
 
 // ---------- numbers ----------
@@ -159,7 +178,7 @@ function summarizeLanguages(repos) {
   return top;
 }
 
-function summarizeStats(user) {
+function summarizeStats(user, allTime) {
   const c = user.contributionsCollection;
   const topRepos = c.commitContributionsByRepository
     .filter((r) => !r.repository.isPrivate)
@@ -169,13 +188,23 @@ function summarizeStats(user) {
       value: r.contributions.totalCount,
     }));
   return {
-    figures: [
-      ["Commits", fmt(c.totalCommitContributions)],
-      ["Pull requests", fmt(c.totalPullRequestContributions)],
-      ["Issues", fmt(c.totalIssueContributions)],
-      ["Repos contributed to", fmt(c.totalRepositoriesWithContributedCommits)],
-      ["Public repos", fmt(user.repositories.totalCount)],
-      ["On GitHub since", user.createdAt.slice(0, 4)],
+    groups: [
+      {
+        title: "All time",
+        figures: [
+          ["Contributions", fmt(allTime.contributions)],
+          ["Commits", fmt(allTime.commits)],
+          ["Public repos", fmt(user.repositories.totalCount)],
+        ],
+      },
+      {
+        title: "Last 12 months",
+        figures: [
+          ["Commits", fmt(c.totalCommitContributions)],
+          ["Pull requests", fmt(c.totalPullRequestContributions)],
+          ["Issues", fmt(c.totalIssueContributions)],
+        ],
+      },
     ],
     topRepos,
   };
@@ -322,21 +351,26 @@ ${rowsSvg}`;
 
 function statsSvg(stats, t) {
   const pad = 28;
-  const top = pad + 44;
-  const listGap = 25;
-  const rowH = 4 * listGap - 26; // second row of figures lines up with the last repo
-  const height = top + 4 * listGap + pad;
+  const groupH = 94;
+  const top = pad + 12;
+  const height = top + stats.groups.length * groupH + pad - 18;
 
-  // Left half: six figures in a 3 x 2 grid.
+  // Left half: figures grouped by time span, three to a row.
   const half = (WIDTH - pad * 2 - 48) / 2;
   const colW = half / 3;
-  const figures = stats.figures
-    .map(([label, value], i) => {
-      const x = pad + (i % 3) * colW;
-      const y = top + Math.floor(i / 3) * rowH;
+  const figures = stats.groups
+    .map((g, gi) => {
+      const y = top + gi * groupH;
+      const items = g.figures
+        .map(([label, value], i) => {
+          const x = pad + i * colW;
+          return `
+<text x="${x}" y="${y + 24}" font-size="12" fill="${t.muted}">${esc(label)}</text>
+<text x="${x}" y="${y + 50}" font-size="20" font-weight="600" fill="${t.text}">${esc(value)}</text>`;
+        })
+        .join("");
       return `
-<text x="${x}" y="${y}" font-size="12" fill="${t.muted}">${esc(label)}</text>
-<text x="${x}" y="${y + 26}" font-size="20" font-weight="600" fill="${t.text}">${esc(value)}</text>`;
+<text x="${pad}" y="${y}" font-size="12" font-weight="600" fill="${t.text}">${esc(g.title)}</text>${items}`;
     })
     .join("");
 
@@ -346,9 +380,11 @@ function statsSvg(stats, t) {
   const countW = 36;
   const trackW = half - nameW - countW;
   const max = Math.max(1, ...stats.topRepos.map((r) => r.value));
+  const listTop = top + 28;
+  const listGap = (height - pad - 4 - listTop) / Math.max(1, stats.topRepos.length - 1);
   const repos = stats.topRepos
     .map((r, i) => {
-      const y = top + i * listGap;
+      const y = listTop + i * listGap;
       const w = Math.max(3, (r.value / max) * trackW);
       const name = r.name.length > 26 ? r.name.slice(0, 25) + "…" : r.name;
       return `
@@ -362,13 +398,13 @@ function statsSvg(stats, t) {
   const divider = `<line x1="${pad + half + 24}" x2="${pad + half + 24}" y1="${pad}" y2="${height - pad}" stroke="${t.grid}"/>`;
 
   const body = `
-<text x="${pad}" y="${pad + 12}" font-size="12" fill="${t.muted}">GitHub stats, last 12 months</text>
-<text x="${rx}" y="${pad + 12}" font-size="12" fill="${t.muted}">Most active repositories, by commits</text>
+<text x="${rx}" y="${top}" font-size="12" font-weight="600" fill="${t.text}">Most active repositories</text>
+<text x="${rx + half}" y="${top}" font-size="12" fill="${t.muted}" text-anchor="end">commits, last 12 months</text>
 ${divider}
 ${figures}
 ${repos}`;
 
-  return card(height, body, "GitHub stats for the last 12 months", t);
+  return card(height, body, "GitHub stats", t);
 }
 
 function educationSvg(schools, t) {
@@ -386,8 +422,10 @@ function educationSvg(schools, t) {
       return `
 <rect x="${x + 0.5}" y="${y + 0.5}" width="${tile - 1}" height="${tile - 1}" rx="8" fill="#ffffff" stroke="${t.border}"/>
 <image x="${x + 6}" y="${y + 6}" width="${tile - 12}" height="${tile - 12}" href="${s.dataUri}" preserveAspectRatio="xMidYMid meet"/>
-<text x="${textX}" y="${y + 22}" font-size="14" font-weight="600" fill="${t.text}">${esc(s.name)}</text>
-<text x="${textX}" y="${y + 40}" font-size="12" fill="${t.muted}">${esc(s.detail)}</text>`;
+<text x="${textX}" y="${y + (s.detail ? 22 : 31)}" font-size="14" font-weight="600" fill="${t.text}">${esc(s.name)}</text>${
+        s.detail ? `
+<text x="${textX}" y="${y + 40}" font-size="12" fill="${t.muted}">${esc(s.detail)}</text>` : ""
+      }`;
     })
     .join("");
 
@@ -403,7 +441,8 @@ ${items}`;
 const user = await fetchData();
 const stats = summarizeCalendar(user.contributionsCollection.contributionCalendar);
 const langs = summarizeLanguages(user.repositories.nodes);
-const ghStats = summarizeStats(user);
+const allTime = await fetchAllTime(user.contributionsCollection.contributionYears);
+const ghStats = summarizeStats(user, allTime);
 const schools = await Promise.all(
   EDUCATION.map(async (s) => ({
     ...s,

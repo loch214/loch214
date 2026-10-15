@@ -1,42 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="840" height="200" viewBox="0 0 840 200" role="img" aria-label="GitHub stats for the last 12 months" font-family='-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif'>
-<title>GitHub stats for the last 12 months</title>
-<rect x="0.5" y="0.5" width="839" height="199" rx="6" fill="none" stroke="#d0d7de"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="238" viewBox="0 0 840 238" role="img" aria-label="GitHub stats" font-family='-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif'>
+<title>GitHub stats</title>
+<rect x="0.5" y="0.5" width="839" height="237" rx="6" fill="none" stroke="#d0d7de"/>
 
-<text x="28" y="40" font-size="12" fill="#656d76">GitHub stats, last 12 months</text>
-<text x="444" y="40" font-size="12" fill="#656d76">Most active repositories, by commits</text>
-<line x1="420" x2="420" y1="28" y2="172" stroke="#eaeef2"/>
+<text x="444" y="40" font-size="12" font-weight="600" fill="#1f2328">Most active repositories</text>
+<text x="812" y="40" font-size="12" fill="#656d76" text-anchor="end">commits, last 12 months</text>
+<line x1="420" x2="420" y1="28" y2="210" stroke="#eaeef2"/>
 
-<text x="28" y="72" font-size="12" fill="#656d76">Commits</text>
-<text x="28" y="98" font-size="20" font-weight="600" fill="#1f2328">677</text>
-<text x="150.66666666666669" y="72" font-size="12" fill="#656d76">Pull requests</text>
-<text x="150.66666666666669" y="98" font-size="20" font-weight="600" fill="#1f2328">69</text>
-<text x="273.33333333333337" y="72" font-size="12" fill="#656d76">Issues</text>
-<text x="273.33333333333337" y="98" font-size="20" font-weight="600" fill="#1f2328">6</text>
-<text x="28" y="146" font-size="12" fill="#656d76">Repos contributed to</text>
-<text x="28" y="172" font-size="20" font-weight="600" fill="#1f2328">27</text>
-<text x="150.66666666666669" y="146" font-size="12" fill="#656d76">Public repos</text>
-<text x="150.66666666666669" y="172" font-size="20" font-weight="600" fill="#1f2328">26</text>
-<text x="273.33333333333337" y="146" font-size="12" fill="#656d76">On GitHub since</text>
-<text x="273.33333333333337" y="172" font-size="20" font-weight="600" fill="#1f2328">2020</text>
+<text x="28" y="40" font-size="12" font-weight="600" fill="#1f2328">All time</text>
+<text x="28" y="64" font-size="12" fill="#656d76">Contributions</text>
+<text x="28" y="90" font-size="20" font-weight="600" fill="#1f2328">853</text>
+<text x="150.66666666666669" y="64" font-size="12" fill="#656d76">Commits</text>
+<text x="150.66666666666669" y="90" font-size="20" font-weight="600" fill="#1f2328">707</text>
+<text x="273.33333333333337" y="64" font-size="12" fill="#656d76">Public repos</text>
+<text x="273.33333333333337" y="90" font-size="20" font-weight="600" fill="#1f2328">26</text>
+<text x="28" y="134" font-size="12" font-weight="600" fill="#1f2328">Last 12 months</text>
+<text x="28" y="158" font-size="12" fill="#656d76">Commits</text>
+<text x="28" y="184" font-size="20" font-weight="600" fill="#1f2328">677</text>
+<text x="150.66666666666669" y="158" font-size="12" fill="#656d76">Pull requests</text>
+<text x="150.66666666666669" y="184" font-size="20" font-weight="600" fill="#1f2328">69</text>
+<text x="273.33333333333337" y="158" font-size="12" fill="#656d76">Issues</text>
+<text x="273.33333333333337" y="184" font-size="20" font-weight="600" fill="#1f2328">6</text>
 
-<text x="444" y="76" font-size="13" fill="#1f2328">Nasrullaunais/carelanka</text>
-<rect x="634" y="69" width="142.0" height="6" rx="3" fill="#eaeef2"/>
-<rect x="634" y="69" width="142.0" height="6" rx="3" fill="#2a78d6"/>
-<text x="812" y="76" font-size="12" fill="#656d76" text-anchor="end">270</text>
-<text x="444" y="101" font-size="13" fill="#1f2328">My-Notion</text>
-<rect x="634" y="94" width="142.0" height="6" rx="3" fill="#eaeef2"/>
-<rect x="634" y="94" width="52.1" height="6" rx="3" fill="#2a78d6"/>
-<text x="812" y="101" font-size="12" fill="#656d76" text-anchor="end">99</text>
-<text x="444" y="126" font-size="13" fill="#1f2328">LearnMate-WMT</text>
-<rect x="634" y="119" width="142.0" height="6" rx="3" fill="#eaeef2"/>
-<rect x="634" y="119" width="35.8" height="6" rx="3" fill="#2a78d6"/>
-<text x="812" y="126" font-size="12" fill="#656d76" text-anchor="end">68</text>
-<text x="444" y="151" font-size="13" fill="#1f2328">my-portfolio</text>
-<rect x="634" y="144" width="142.0" height="6" rx="3" fill="#eaeef2"/>
-<rect x="634" y="144" width="31.6" height="6" rx="3" fill="#2a78d6"/>
-<text x="812" y="151" font-size="12" fill="#656d76" text-anchor="end">60</text>
-<text x="444" y="176" font-size="13" fill="#1f2328">LankaAuto</text>
-<rect x="634" y="169" width="142.0" height="6" rx="3" fill="#eaeef2"/>
-<rect x="634" y="169" width="21.0" height="6" rx="3" fill="#2a78d6"/>
-<text x="812" y="176" font-size="12" fill="#656d76" text-anchor="end">40</text>
+<text x="444" y="72" font-size="13" fill="#1f2328">Nasrullaunais/carelanka</text>
+<rect x="634" y="65" width="142.0" height="6" rx="3" fill="#eaeef2"/>
+<rect x="634" y="65" width="142.0" height="6" rx="3" fill="#2a78d6"/>
+<text x="812" y="72" font-size="12" fill="#656d76" text-anchor="end">270</text>
+<text x="444" y="106.5" font-size="13" fill="#1f2328">My-Notion</text>
+<rect x="634" y="99.5" width="142.0" height="6" rx="3" fill="#eaeef2"/>
+<rect x="634" y="99.5" width="52.1" height="6" rx="3" fill="#2a78d6"/>
+<text x="812" y="106.5" font-size="12" fill="#656d76" text-anchor="end">99</text>
+<text x="444" y="141" font-size="13" fill="#1f2328">LearnMate-WMT</text>
+<rect x="634" y="134" width="142.0" height="6" rx="3" fill="#eaeef2"/>
+<rect x="634" y="134" width="35.8" height="6" rx="3" fill="#2a78d6"/>
+<text x="812" y="141" font-size="12" fill="#656d76" text-anchor="end">68</text>
+<text x="444" y="175.5" font-size="13" fill="#1f2328">my-portfolio</text>
+<rect x="634" y="168.5" width="142.0" height="6" rx="3" fill="#eaeef2"/>
+<rect x="634" y="168.5" width="31.6" height="6" rx="3" fill="#2a78d6"/>
+<text x="812" y="175.5" font-size="12" fill="#656d76" text-anchor="end">60</text>
+<text x="444" y="210" font-size="13" fill="#1f2328">LankaAuto</text>
+<rect x="634" y="203" width="142.0" height="6" rx="3" fill="#eaeef2"/>
+<rect x="634" y="203" width="21.0" height="6" rx="3" fill="#2a78d6"/>
+<text x="812" y="210" font-size="12" fill="#656d76" text-anchor="end">40</text>
 </svg>
