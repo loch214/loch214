@@ -11,11 +11,6 @@
 </picture>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/rhythm-dark.svg">
-  <img alt="Commits by day of week and hour of day over the last 12 months" src="assets/rhythm-light.svg" width="100%">
-</picture>
-
-<picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/stats-dark.svg">
   <img alt="GitHub stats for the last 12 months and most active repositories" src="assets/stats-light.svg" width="100%">
 </picture>
