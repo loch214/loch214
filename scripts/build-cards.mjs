@@ -40,6 +40,13 @@ const WIDTH = 840;
 const IGNORED_LANGUAGES = new Set(["HTML", "CSS", "Batchfile", "PowerShell", "Shell", "Dockerfile"]);
 const LANGUAGE_ALIASES = { "Jupyter Notebook": "Python" };
 
+const HEADER = {
+  name: "Lochana Dahanayake",
+  subtitle: "Software Engineering undergraduate at SLIIT  ·  Colombo, Sri Lanka",
+  intro:
+    "Most of what I build is backend work in Java and Spring Boot. Outside of that I work on web apps, applied machine learning, and small security tools.",
+};
+
 const EDUCATION = [
   {
     logo: "logos/sliit.png",
@@ -70,6 +77,7 @@ async function fetchData() {
     `query($login: String!) {
       user(login: $login) {
         createdAt
+        avatarUrl(size: 200)
         contributionsCollection {
           contributionYears
           totalCommitContributions
@@ -436,6 +444,46 @@ ${items}`;
   return card(height, body, "Education: " + schools.map((s) => s.name).join(", "), t);
 }
 
+// Rough line wrapping for SVG text, which has no automatic wrapping.
+function wrap(text, maxChars) {
+  const lines = [];
+  let line = "";
+  for (const word of text.split(" ")) {
+    if (line && (line + " " + word).length > maxChars) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = line ? line + " " + word : word;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+function headerSvg(h, avatarUri, t) {
+  const pad = 28;
+  const size = 96;
+  const textX = pad + size + 24;
+  const lines = wrap(h.intro, 92);
+  const height = pad * 2 + Math.max(size, 62 + lines.length * 20);
+  const cy = height / 2;
+  const textTop = cy - (62 + lines.length * 20) / 2;
+
+  const intro = lines
+    .map((l, i) => `<text x="${textX}" y="${textTop + 72 + i * 20}" font-size="13" fill="${t.text}">${esc(l)}</text>`)
+    .join("");
+
+  const body = `
+<defs><clipPath id="avatar"><circle cx="${pad + size / 2}" cy="${cy}" r="${size / 2}"/></clipPath></defs>
+<image x="${pad}" y="${cy - size / 2}" width="${size}" height="${size}" href="${avatarUri}" clip-path="url(#avatar)" preserveAspectRatio="xMidYMid slice"/>
+<circle cx="${pad + size / 2}" cy="${cy}" r="${size / 2 - 0.5}" fill="none" stroke="${t.border}"/>
+<text x="${textX}" y="${textTop + 22}" font-size="24" font-weight="600" fill="${t.text}">${esc(h.name)}</text>
+<text x="${textX}" y="${textTop + 46}" font-size="13" fill="${t.muted}" xml:space="preserve">${esc(h.subtitle)}</text>
+${intro}`;
+
+  return card(height, body, `${h.name}. ${h.subtitle}. ${h.intro}`, t);
+}
+
 // ---------- main ----------
 
 const user = await fetchData();
@@ -443,6 +491,8 @@ const stats = summarizeCalendar(user.contributionsCollection.contributionCalenda
 const langs = summarizeLanguages(user.repositories.nodes);
 const allTime = await fetchAllTime(user.contributionsCollection.contributionYears);
 const ghStats = summarizeStats(user, allTime);
+const avatarRes = await fetch(user.avatarUrl);
+const avatarUri = `data:${avatarRes.headers.get("content-type") || "image/png"};base64,${Buffer.from(await avatarRes.arrayBuffer()).toString("base64")}`;
 const schools = await Promise.all(
   EDUCATION.map(async (s) => ({
     ...s,
@@ -456,6 +506,7 @@ for (const [mode, theme] of Object.entries(THEMES)) {
   await writeFile(new URL(`languages-${mode}.svg`, OUT), languagesSvg(langs, theme));
   await writeFile(new URL(`stats-${mode}.svg`, OUT), statsSvg(ghStats, theme));
   await writeFile(new URL(`education-${mode}.svg`, OUT), educationSvg(schools, theme));
+  await writeFile(new URL(`header-${mode}.svg`, OUT), headerSvg(HEADER, avatarUri, theme));
 }
 
 console.log(`${stats.total} contributions, longest streak ${stats.longest}, current ${stats.current}`);
