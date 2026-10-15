@@ -369,7 +369,13 @@ function statsSvg(stats, t) {
 <text x="${x}" y="${y + 50}" font-size="20" font-weight="600" fill="${t.text}">${esc(value)}</text>`;
         })
         .join("");
+      // The all-time group sits on a lightly tinted panel so it reads first.
+      const panel =
+        gi === 0
+          ? `<rect x="${pad - 14}" y="${y - 20}" width="${half + 24}" height="84" rx="8" fill="${t.accent}" fill-opacity="0.08" stroke="${t.accent}" stroke-opacity="0.35"/>`
+          : "";
       return `
+${panel}
 <text x="${pad}" y="${y}" font-size="12" font-weight="600" fill="${t.text}">${esc(g.title)}</text>${items}`;
     })
     .join("");
