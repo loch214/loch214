@@ -1,8 +1,3 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/header-dark.svg">
-  <img alt="Lochana Dahanayake. Software Engineering undergraduate at SLIIT, Colombo, Sri Lanka. Most of what I build is backend work in Java and Spring Boot. Outside of that I work on web apps, applied machine learning, and small security tools." src="assets/header-light.svg" width="100%">
-</picture>
-
 [Portfolio](https://lochd-my-portfolio.vercel.app/) · [LinkedIn](https://www.linkedin.com/in/lochana-dahanayake/)
 
 <picture>
