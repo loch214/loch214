@@ -1,7 +1,7 @@
-// Builds the activity and language cards shown in the profile README.
+// Builds the cards shown in the profile README.
 // Runs on Node 20+ with no dependencies. Needs GITHUB_TOKEN in the environment.
 
-import { writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir } from "node:fs/promises";
 
 const LOGIN = process.env.PROFILE_LOGIN || "loch214";
 const TOKEN = process.env.GITHUB_TOKEN;
@@ -40,6 +40,19 @@ const WIDTH = 840;
 const IGNORED_LANGUAGES = new Set(["HTML", "CSS", "Batchfile", "PowerShell", "Shell", "Dockerfile"]);
 const LANGUAGE_ALIASES = { "Jupyter Notebook": "Python" };
 
+const EDUCATION = [
+  {
+    logo: "logos/sliit.png",
+    name: "Sri Lanka Institute of Information Technology",
+    detail: "BSc (Hons) in Information Technology, Software Engineering",
+  },
+  {
+    logo: "logos/dssc.png",
+    name: "D. S. Senanayake College, Colombo",
+    detail: "Secondary education",
+  },
+];
+
 async function graphql(query, variables) {
   const res = await fetch("https://api.github.com/graphql", {
     method: "POST",
@@ -57,13 +70,23 @@ async function fetchData() {
   const data = await graphql(
     `query($login: String!) {
       user(login: $login) {
+        createdAt
         contributionsCollection {
+          totalCommitContributions
+          totalPullRequestContributions
+          totalIssueContributions
+          totalRepositoriesWithContributedCommits
+          commitContributionsByRepository(maxRepositories: 20) {
+            repository { name isPrivate owner { login } }
+            contributions { totalCount }
+          }
           contributionCalendar {
             totalContributions
             weeks { contributionDays { date contributionCount } }
           }
         }
         repositories(first: 100, ownerAffiliations: OWNER, isFork: false, privacy: PUBLIC) {
+          totalCount
           nodes {
             name
             languages(first: 20) { edges { size node { name } } }
@@ -134,6 +157,28 @@ function summarizeLanguages(repos) {
   const rest = sorted.slice(5).reduce((sum, l) => sum + l.value, 0);
   if (rest > 0.005) top.push({ name: "Other", value: rest });
   return top;
+}
+
+function summarizeStats(user) {
+  const c = user.contributionsCollection;
+  const topRepos = c.commitContributionsByRepository
+    .filter((r) => !r.repository.isPrivate)
+    .slice(0, 5)
+    .map((r) => ({
+      name: r.repository.owner.login === LOGIN ? r.repository.name : `${r.repository.owner.login}/${r.repository.name}`,
+      value: r.contributions.totalCount,
+    }));
+  return {
+    figures: [
+      ["Commits", fmt(c.totalCommitContributions)],
+      ["Pull requests", fmt(c.totalPullRequestContributions)],
+      ["Issues", fmt(c.totalIssueContributions)],
+      ["Repos contributed to", fmt(c.totalRepositoriesWithContributedCommits)],
+      ["Public repos", fmt(user.repositories.totalCount)],
+      ["On GitHub since", user.createdAt.slice(0, 4)],
+    ],
+    topRepos,
+  };
 }
 
 // ---------- drawing ----------
@@ -275,16 +320,103 @@ ${rowsSvg}`;
   return card(height, body, "Languages across public repositories", t);
 }
 
+function statsSvg(stats, t) {
+  const pad = 28;
+  const top = pad + 44;
+  const listGap = 25;
+  const rowH = 4 * listGap - 26; // second row of figures lines up with the last repo
+  const height = top + 4 * listGap + pad;
+
+  // Left half: six figures in a 3 x 2 grid.
+  const half = (WIDTH - pad * 2 - 48) / 2;
+  const colW = half / 3;
+  const figures = stats.figures
+    .map(([label, value], i) => {
+      const x = pad + (i % 3) * colW;
+      const y = top + Math.floor(i / 3) * rowH;
+      return `
+<text x="${x}" y="${y}" font-size="12" fill="${t.muted}">${esc(label)}</text>
+<text x="${x}" y="${y + 26}" font-size="20" font-weight="600" fill="${t.text}">${esc(value)}</text>`;
+    })
+    .join("");
+
+  // Right half: most active repositories by commits.
+  const rx = pad + half + 48;
+  const nameW = 190;
+  const countW = 36;
+  const trackW = half - nameW - countW;
+  const max = Math.max(1, ...stats.topRepos.map((r) => r.value));
+  const repos = stats.topRepos
+    .map((r, i) => {
+      const y = top + i * listGap;
+      const w = Math.max(3, (r.value / max) * trackW);
+      const name = r.name.length > 26 ? r.name.slice(0, 25) + "…" : r.name;
+      return `
+<text x="${rx}" y="${y + 4}" font-size="13" fill="${t.text}">${esc(name)}</text>
+<rect x="${rx + nameW}" y="${y - 3}" width="${trackW.toFixed(1)}" height="6" rx="3" fill="${t.track}"/>
+<rect x="${rx + nameW}" y="${y - 3}" width="${w.toFixed(1)}" height="6" rx="3" fill="${t.accent}"/>
+<text x="${rx + half}" y="${y + 4}" font-size="12" fill="${t.muted}" text-anchor="end">${fmt(r.value)}</text>`;
+    })
+    .join("");
+
+  const divider = `<line x1="${pad + half + 24}" x2="${pad + half + 24}" y1="${pad}" y2="${height - pad}" stroke="${t.grid}"/>`;
+
+  const body = `
+<text x="${pad}" y="${pad + 12}" font-size="12" fill="${t.muted}">GitHub stats, last 12 months</text>
+<text x="${rx}" y="${pad + 12}" font-size="12" fill="${t.muted}">Most active repositories, by commits</text>
+${divider}
+${figures}
+${repos}`;
+
+  return card(height, body, "GitHub stats for the last 12 months", t);
+}
+
+function educationSvg(schools, t) {
+  const pad = 28;
+  const tile = 52;
+  const gap = 16;
+  const top = pad + 30;
+  const height = top + schools.length * tile + (schools.length - 1) * gap + pad;
+
+  const items = schools
+    .map((s, i) => {
+      const x = pad;
+      const y = top + i * (tile + gap);
+      const textX = x + tile + 16;
+      return `
+<rect x="${x + 0.5}" y="${y + 0.5}" width="${tile - 1}" height="${tile - 1}" rx="8" fill="#ffffff" stroke="${t.border}"/>
+<image x="${x + 6}" y="${y + 6}" width="${tile - 12}" height="${tile - 12}" href="${s.dataUri}" preserveAspectRatio="xMidYMid meet"/>
+<text x="${textX}" y="${y + 22}" font-size="14" font-weight="600" fill="${t.text}">${esc(s.name)}</text>
+<text x="${textX}" y="${y + 40}" font-size="12" fill="${t.muted}">${esc(s.detail)}</text>`;
+    })
+    .join("");
+
+  const body = `
+<text x="${pad}" y="${pad + 12}" font-size="12" fill="${t.muted}">Education</text>
+${items}`;
+
+  return card(height, body, "Education: " + schools.map((s) => s.name).join(", "), t);
+}
+
 // ---------- main ----------
 
 const user = await fetchData();
 const stats = summarizeCalendar(user.contributionsCollection.contributionCalendar);
 const langs = summarizeLanguages(user.repositories.nodes);
+const ghStats = summarizeStats(user);
+const schools = await Promise.all(
+  EDUCATION.map(async (s) => ({
+    ...s,
+    dataUri: "data:image/png;base64," + (await readFile(new URL(s.logo, OUT))).toString("base64"),
+  })),
+);
 
 await mkdir(OUT, { recursive: true });
 for (const [mode, theme] of Object.entries(THEMES)) {
   await writeFile(new URL(`activity-${mode}.svg`, OUT), activitySvg(stats, theme));
   await writeFile(new URL(`languages-${mode}.svg`, OUT), languagesSvg(langs, theme));
+  await writeFile(new URL(`stats-${mode}.svg`, OUT), statsSvg(ghStats, theme));
+  await writeFile(new URL(`education-${mode}.svg`, OUT), educationSvg(schools, theme));
 }
 
 console.log(`${stats.total} contributions, longest streak ${stats.longest}, current ${stats.current}`);
