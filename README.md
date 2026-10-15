@@ -2,7 +2,7 @@
 
 Software engineering undergraduate at SLIIT, based in Colombo. Most of what I build is backend work in Java and Spring Boot. Outside of that I work on web apps, applied machine learning, and small security tools.
 
-[Portfolio](https://lochd-my-portfolio.vercel.app/)
+[Portfolio](https://lochd-my-portfolio.vercel.app/) · [LinkedIn](https://www.linkedin.com/in/lochana-dahanayake/)
 
 <br>
 
