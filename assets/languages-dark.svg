@@ -7,21 +7,21 @@
 <text x="28" y="68" font-size="13" fill="#e6edf3">JavaScript</text>
 <rect x="148" y="61" width="204.0" height="6" rx="3" fill="#21262d"/>
 <rect x="148" y="61" width="204.0" height="6" rx="3" fill="#3987e5"/>
-<text x="396" y="68" font-size="12" fill="#7d8590" text-anchor="end">39.7%</text>
+<text x="396" y="68" font-size="12" fill="#7d8590" text-anchor="end">38.3%</text>
 <text x="28" y="104" font-size="13" fill="#e6edf3">Java</text>
 <rect x="148" y="97" width="204.0" height="6" rx="3" fill="#21262d"/>
-<rect x="148" y="97" width="126.0" height="6" rx="3" fill="#3987e5"/>
-<text x="396" y="104" font-size="12" fill="#7d8590" text-anchor="end">24.5%</text>
+<rect x="148" y="97" width="125.9" height="6" rx="3" fill="#3987e5"/>
+<text x="396" y="104" font-size="12" fill="#7d8590" text-anchor="end">23.6%</text>
 <text x="28" y="140" font-size="13" fill="#e6edf3">TypeScript</text>
 <rect x="148" y="133" width="204.0" height="6" rx="3" fill="#21262d"/>
-<rect x="148" y="133" width="112.0" height="6" rx="3" fill="#3987e5"/>
-<text x="396" y="140" font-size="12" fill="#7d8590" text-anchor="end">21.8%</text>
+<rect x="148" y="133" width="117.3" height="6" rx="3" fill="#3987e5"/>
+<text x="396" y="140" font-size="12" fill="#7d8590" text-anchor="end">22.0%</text>
 <text x="444" y="68" font-size="13" fill="#e6edf3">Python</text>
 <rect x="564" y="61" width="204.0" height="6" rx="3" fill="#21262d"/>
 <rect x="564" y="61" width="59.3" height="6" rx="3" fill="#3987e5"/>
-<text x="812" y="68" font-size="12" fill="#7d8590" text-anchor="end">11.5%</text>
+<text x="812" y="68" font-size="12" fill="#7d8590" text-anchor="end">11.1%</text>
 <text x="444" y="104" font-size="13" fill="#e6edf3">C#</text>
 <rect x="564" y="97" width="204.0" height="6" rx="3" fill="#21262d"/>
-<rect x="564" y="97" width="12.6" height="6" rx="3" fill="#3987e5"/>
-<text x="812" y="104" font-size="12" fill="#7d8590" text-anchor="end">2.4%</text>
+<rect x="564" y="97" width="24.3" height="6" rx="3" fill="#3987e5"/>
+<text x="812" y="104" font-size="12" fill="#7d8590" text-anchor="end">4.6%</text>
 </svg>
