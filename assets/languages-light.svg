@@ -10,7 +10,7 @@
 <text x="396" y="68" font-size="12" fill="#656d76" text-anchor="end">37.0%</text>
 <text x="28" y="104" font-size="13" fill="#1f2328">TypeScript</text>
 <rect x="148" y="97" width="204.0" height="6" rx="3" fill="#eaeef2"/>
-<rect x="148" y="97" width="136.1" height="6" rx="3" fill="#2a78d6"/>
+<rect x="148" y="97" width="136.2" height="6" rx="3" fill="#2a78d6"/>
 <text x="396" y="104" font-size="12" fill="#656d76" text-anchor="end">24.7%</text>
 <text x="28" y="140" font-size="13" fill="#1f2328">Java</text>
 <rect x="148" y="133" width="204.0" height="6" rx="3" fill="#eaeef2"/>
