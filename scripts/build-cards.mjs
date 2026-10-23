@@ -3,7 +3,7 @@
 
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 
-const LOGIN = process.env.PROFILE_LOGIN || "loch214";
+const LOGIN = process.env.PROFILE_LOGIN || "lochana-dahanayake";
 const TOKEN = process.env.GITHUB_TOKEN;
 const OUT = new URL("../assets/", import.meta.url);
 
