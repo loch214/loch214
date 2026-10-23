@@ -1,5 +1,3 @@
-Hi, I'm **Lochana Dahanayake**, a Software Engineering undergraduate at SLIIT (Sri Lanka Institute of Information Technology).
-
 [Portfolio](https://lochana-dahanayake.me/) · [LinkedIn](https://www.linkedin.com/in/lochana-dahanayake/)
 
 <picture>
